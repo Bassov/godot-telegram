@@ -1,0 +1,35 @@
+services:
+  backend:
+    image: godot-telegram-backend:latest
+    build:
+      context: apps/backend/
+      dockerfile: Dockerfile
+      args:
+        USER_ID: ${USER_ID}
+        GROUP_ID: ${GROUP_ID}
+    env_file:
+      - ./apps/backend/.env
+      - ./apps/backend/.env.secret
+    volumes:
+      - type: bind
+        source: ./apps/backend/
+        target: /backend/
+      - /backend/.venv
+    ports:
+        - "8000:8000"
+    restart: always
+    depends_on:
+      - backend-db
+
+  backend-db:
+    image: postgres:14
+    restart: always
+    env_file:
+      - ./apps/backend/.postgres.env
+    ports:
+        - "5432:5432"
+    volumes:
+      - app-db-data:/var/lib/postgresql/data
+
+volumes:
+  app-db-data:

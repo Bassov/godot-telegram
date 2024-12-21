@@ -1,0 +1,2 @@
+### GET configs
+GET http://localhost:8000/configs
