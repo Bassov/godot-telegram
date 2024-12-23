@@ -12,27 +12,32 @@ class SheetsModel(BaseModel):
     @classmethod
     async def load_from_sheets(cls) -> List["SheetsModel"]:
         resp = await get_sheet(cls.SHEET_NAME, cls.SHEET_RANGE)
+        print(resp.__dict__)
         return cls.from_sheet_data(resp.values)
 
     @classmethod
     def from_sheet_data(cls, data: List[List[str]]) -> List["SheetsModel"]:
+        if len(data) == 0:
+            raise ValueError(f"Sheet {cls.SHEET_NAME} is empty")
+
         headers = data[0]
         fields = [f for f in cls.model_fields if not f.startswith('_')]
+
+        if len(headers) < len(fields):
+            raise ValueError(f"Required fields {fields} not found in headers: {headers}")
         
         # Validate all required fields are present in headers ordered
         for idx, field in enumerate(fields):
             if headers[idx] != field:
-                raise ValidationError(f"Required field {field} not found in headers: {headers}")
+                raise ValueError(f"Required field {field} not found in headers: {headers}")
         
         rows = data[1:]
         result = []
         for row in rows:
-            # Create dict with values in same order as fields
             row_dict = {}
-            for field in fields:
-                col_idx = headers.index(field)
-                row_dict[field] = row[col_idx]
-            
+            for idx, value in enumerate(row):
+                row_dict[fields[idx]] = None if len(value) == 0 else value
+
             # Let pydantic handle type conversion
             result.append(cls(**row_dict))
 

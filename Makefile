@@ -14,14 +14,18 @@ Example usage:
 	make run
 
 Availiable <target>:
+	Commonly used:
 	init            - Initialize the environment for local development
 	run             - Run whole godot-telegram services in 1 command
 
+	Running application:
 	build           - Build the application
 	up              - Start the application
 	down            - Stop the application
-	bash            - Run bash in the application container
 	logs            - Follow the logs
+
+	Quality:
+	test            - Run tests
 
 endef
 export HELP
@@ -30,7 +34,7 @@ help:
 	@echo "$$HELP"
 	@echo "$$BACKEND_HELP"
 
-init: backend/prepare_env
+init: build backend/prepare_env
 run: build up backend/migrate logs
 build:
 	docker compose build
@@ -38,7 +42,7 @@ up:
 	docker compose up -d
 down:
 	docker compose down
-bash:
-	docker compose run --rm backend bash
 logs:
 	docker compose logs -f
+
+test: backend/test

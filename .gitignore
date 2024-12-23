@@ -368,5 +368,6 @@ FodyWeavers.xsd
 # Secret files
 *.secret
 
-# venv
+# python specific
 *.venv
+*.pytest_cache
