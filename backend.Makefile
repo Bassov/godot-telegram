@@ -23,8 +23,7 @@ backend/help:
 # env
 backend/prepare_env:
 	test -f apps/backend/.env.secret || cp apps/backend/.env.secret.example apps/backend/.env.secret && \
-	test -f apps/backend/.venv || mkdir apps/backend/.venv && \
-	docker run -v "$(PWD)/apps/backend":/opt/mount --rm godot-telegram-backend:latest cp -r /backend/.venv /opt/mount/
+	test -f apps/backend/.venv || mkdir apps/backend/.venv
 
 # DB migrations
 backend/gen_auto_migration:
@@ -42,3 +41,5 @@ backend/test:
 
 backend/bash:
 	docker compose run --rm backend bash
+backend/image-bash:
+	docker run --rm -it godot-telegram-backend:latest /bin/bash

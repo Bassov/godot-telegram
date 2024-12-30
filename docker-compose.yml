@@ -11,9 +11,8 @@ services:
       - ./apps/backend/.env
       - ./apps/backend/.env.secret
     volumes:
-      - type: bind
-        source: ./apps/backend/
-        target: /backend/
+      - ./apps/backend/:/backend:rw
+      - /backend/.venv
     ports:
         - "8000:8000"
     restart: always
