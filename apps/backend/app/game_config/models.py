@@ -1,5 +1,6 @@
 from typing import List, ClassVar
 
+import asyncio
 from pydantic import BaseModel
 from app.google.sheets import SheetsModel
 
@@ -24,7 +25,12 @@ class GameConfigs(BaseModel):
 
     @classmethod
     async def load_from_sheets(cls):
+        levels, items = await asyncio.gather(
+            Level.load_from_sheets(),
+            Item.load_from_sheets(),
+        )
+
         return cls(
-            levels=await Level.load_from_sheets(),
-            items=await Item.load_from_sheets(),
+            levels=levels,
+            items=items,
         )

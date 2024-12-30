@@ -11,23 +11,24 @@ class SheetExample(SheetsModel):
     id: int
     name: str
     value: Optional[str] = None
+    float_value: float # in google sheets it has format "1,0"
 
 
 sheet_example_valid_tests = [
     # header only
     (
-        [["id", "name", "value"]], # values from google sheets request
+        [["id", "name", "value", "float_value"]], # values from google sheets request
         []                         # expected parsed result
     ),
     # all values
     (
-        [["id", "name", "value"], ["1", "test1", "value1"]],
-        [SheetExample(id=1, name="test1", value="value1")]
+        [["id", "name", "value", "float_value"], ["1", "test1", "value1", "1,0"]],
+        [SheetExample(id=1, name="test1", value="value1", float_value=1.0)]
     ),
     # missing value
     (
-        [["id", "name", "value"], ["1", "test1", ""]],
-        [SheetExample(id=1, name="test1")]
+        [["id", "name", "value", "float_value"], ["1", "test1", "", "1,0"]],
+        [SheetExample(id=1, name="test1", float_value=1.0)]
     )
 ]
 
@@ -58,9 +59,9 @@ sheet_example_invalid_tests = [
     # missing header
     ([["id", "name"]]),
     # missing value
-    ([["id", "name", "value"], ["1", "", ""]]),
+    ([["id", "name", "value", "float_value"], ["1", "", "", "1,0"]]),
     # wrong value type
-    ([["id", "name", "value"], ["test", "test", "test"]]),
+    ([["id", "name", "value", "float_value"], ["test", "test", "test", "test"]]),
 ]
 
 @pytest.mark.asyncio

@@ -365,6 +365,9 @@ FodyWeavers.xsd
 # Visual Studio
 *.sln
 
+# Visual Studio code
+*.vscode
+
 # Secret files
 *.secret
 

@@ -1,5 +1,5 @@
 import httpx
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 
 from app.config import env
 
@@ -42,6 +42,14 @@ class SheetsModel(BaseModel):
             result.append(cls(**row_dict))
 
         return result
+
+    @model_validator(mode='before')
+    @classmethod
+    def fix_float(cls, data: dict) -> dict:
+        for k, v in data.items():
+            if issubclass(float, cls.__annotations__[k]) and isinstance(v, str):
+                data[k] = v.replace(',', '.')
+        return data
 
 class GetSheetResponse(BaseModel):
     range: str
